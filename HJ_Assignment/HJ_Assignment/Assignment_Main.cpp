@@ -3,8 +3,8 @@
 #include "Homework02.h"
 int main()
 {
-	//Homework01_Run();
-	//srand(time(0));
-	srand(587);
+	srand(time(0));
+	//srand(587);
+	Homework01_Run();
 	Homework02_Run();
 }

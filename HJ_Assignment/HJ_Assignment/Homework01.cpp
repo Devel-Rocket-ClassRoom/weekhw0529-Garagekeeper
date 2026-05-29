@@ -18,7 +18,7 @@ bool IsLeapYear(int Years)
 {
 	bool Res = false;
 
-	if ( ( (Years % 4) == 0) && ( (Years % 100) != 0)  || (Years % 400 == 0))
+	if (((Years % 4) == 0) && ((Years % 100) != 0) || (Years % 400 == 0))
 		Res = true;
 
 	return Res;
@@ -26,9 +26,48 @@ bool IsLeapYear(int Years)
 
 void GetInput(int& InYear, int& Month, int& Day)
 {
-	printf("요일을 알고 싶은 날짜를 입력해주세요 (년 월 일) : ");
+	
 
-	cin >> InYear >> Month >> Day;
+	bool IsCorretInput = false;
+	while (IsCorretInput == false)
+	{
+		printf("\n\n요일을 알고 싶은 날짜를 입력해주세요 \n");
+		printf("종료를 원하시면 0 0 0을 입력해주세요!\n");
+
+		cin >> InYear >> Month >> Day;
+		IsCorretInput = true;
+		if (InYear < 0)
+		{
+			IsCorretInput = false;
+			printf("연도는 음수일 수 없습니다.\n");
+			continue;
+		}
+		if (Month > 12 || Month < 0) 
+		{ 
+			IsCorretInput = false; 
+			printf("월은 1이상 12이하여야 합니다..\n");
+			continue;
+		}
+		if (Day < 0) 
+		{ 
+			printf("일자 음수일 수 없습니다.\n");
+			IsCorretInput = false; 
+			continue;
+		}
+
+		if (Month == FEB && IsLeapYear(InYear) && Day == DayOfMonth[Month - 1] + 1)
+		{
+			IsCorretInput = true;
+		}
+		else if (Day > DayOfMonth[Month - 1]) 
+		{
+			printf("해당 연도의 해당월은 해당 일자가 없습니다.\n");
+			IsCorretInput = false; 
+		}
+
+	}
+
+
 }
 
 int CalcDay(int InYear, int InMonth, int InDay)
@@ -43,7 +82,7 @@ int CalcDay(int InYear, int InMonth, int InDay)
 		{
 			// 0-1. 1년은 365일
 			DayAmount += 365;
-			
+
 			// 0-2. 현재연도가 윤년이면 1년은 366일 
 			if (IsLeapYear(YearAmount))
 				++DayAmount;
@@ -56,7 +95,7 @@ int CalcDay(int InYear, int InMonth, int InDay)
 		while (MonthAmount < InMonth)
 		{
 			// 해당 월의 일수를 더한다.
-			DayAmount += DayOfMonth[MonthAmount];
+			DayAmount += DayOfMonth[MonthAmount - 1];
 
 			// 해당년도가 윤년이고 해당월이 2월 이면 1일 더해준다.
 			if (MonthAmount == FEB && IsLeapYear(YearAmount))
@@ -76,7 +115,7 @@ int CalcDay(int InYear, int InMonth, int InDay)
 void PrintResult(int InYear, int InMonth, int InDay, int ResDay)
 {
 	// 요일 스트링에서 요일을 출력한다.
-	printf("%d년 %d월 %d일은 %s요일 입니다.\n", InYear, InMonth, InDay, DayofWeekWString[ResDay].c_str());
+	printf("%d년 %d월 %d일은 %s요일 입니다.\n\n", InYear, InMonth, InDay, DayofWeekWString[ResDay].c_str());
 }
 
 void Homework01_Run()
@@ -93,20 +132,28 @@ void Homework01_Run()
 	printf("┃       1. 요일 구하기          ┃\n");
 	printf("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
 
-	int InputYear = 0;
-	int InputMonth = 0;
-	int InoputDay = 0;
+	while (true)
+	{
 
-	// 입력을 받는다.
-	GetInput(InputYear, InputMonth, InoputDay);
+		int InputYear = 0;
+		int InputMonth = 0;
+		int InoputDay = 0;
 
-	// 1/1/1 부터 입력 날자까지의 누적일을 얻는다
-	int Day = CalcDay(InputYear, InputMonth, InoputDay);
 
-	// 누적일을 7로 나눠 요일 정보를 얻는다.
-	Day %= NumOfDayInWeek;
-	
-	// 요일을 출력한다.
-	PrintResult(InputYear, InputMonth, InoputDay, Day);
+		// 입력을 받는다.
+		GetInput(InputYear, InputMonth, InoputDay);
+
+		if (InputYear == 0 && InputMonth == 0 && InoputDay == 0)
+			break;
+
+		// 1/1/1 부터 입력 날자까지의 누적일을 얻는다
+		int Day = CalcDay(InputYear, InputMonth, InoputDay);
+
+		// 누적일을 7로 나눠 요일 정보를 얻는다.
+		Day %= NumOfDayInWeek;
+
+		// 요일을 출력한다.
+		PrintResult(InputYear, InputMonth, InoputDay, Day);
+	}
 
 }
